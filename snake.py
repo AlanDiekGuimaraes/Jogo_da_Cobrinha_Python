@@ -6,6 +6,7 @@ pygame.init()
 resolucao = (500, 500)                                              # Criando a tela do Jogo em pixels
 screen = pygame.display.set_mode(resolucao)
 preto = (0, 0, 0)                                                   # Cores em RGB para o fundo da tela.
+clock = pygame.time.Clock()                                         # Adicionando limitador de fps
 
 class Snake:                                                        # Classe que define a cobra no jogo.
     cor = (255, 255, 255)                                           # Cor branca (em RGB) para a cobra.
@@ -15,28 +16,51 @@ class Snake:                                                        # Classe que
         self.textura = pygame.Surface(self.tamanho)                 # Criando uma superfície para cada pixel da cobra.
         self.textura.fill(self.cor)                                 # Preenchendo a superfície com a cor branca.
 
-        self.corpo = [(100, 100),(90, 100), (80, 100) ]             # Lista que define a posição inicial da cobra.
+        self.corpo = [ (100, 100),(90, 100), (80, 100)]             # Lista que define a posição inicial da cobra.
 
-        self.direcao = 'direita'
+        self.direcao ='direita'
 
     def blit(self, screen):                                         # Método para desenhar a cobra na tela.
         for posicao in self.corpo:                                  # Percorre cada posição do corpo da cobra.
             screen.blit(self.textura, posicao)                      # Desenha o segmento da cobra na tela na posição especificada.
 
-    def andar(self):
-        cabeca = self.corpo[0]
-        x = cabeca[0]
+    def andar(self):                                                # Método para mover a cobra na direção atual.
+        cabeca = self.corpo[0]                                      # A cabeça da cobra é o primeiro segmento na lista do corpo.
+        x = cabeca[0]                                               # Cordenadas da cabeca
         y = cabeca[1]
 
-        if self.direcao == 'direita':
-            self.corpo[0] = (x + self.velocidade, y)
+        if self.direcao == 'direita':                               # Lógica para mover na direção indicada.
+            self.corpo.insert(0, (x + self.velocidade, y))
         elif self.direcao == 'esquerda':
-            self.corpo[0] = (x - self.velocidade, y)
+            self.corpo.insert(0, (x - self.velocidade, y))
         elif self.direcao == 'cima':
-            self.corpo[0] = (x, y - self.velocidade)
+            self.corpo.insert(0,(x, y - self.velocidade))
         elif self.direcao == 'baixo':
-            self.corpo[0] = (x, y + self.velocidade)
+            self.corpo.insert(0, (x, y + self.velocidade))
 
+        self.corpo.pop(-1)
+
+    def cima(self):                                                 # Métodos para mudar a direção da cobra.
+        if self.direcao != 'baixo':
+            self.direcao = 'cima'                                   # Definição da direção da cobra.
+
+    def baixo(self):
+        if self.direcao != 'cima':
+            self.direcao = 'baixo'
+
+    def esquerda(self):
+        if self.direcao != 'direita':
+            self.direcao = 'esquerda'
+
+    def direita(self):
+        if self.direcao != 'esquerda':
+            self.direcao = 'direita'
+
+    def colisao_frutinha(self, frutinha):
+        return self.corpo[0] == frutinha.posicao
+
+    def comer(self):
+        self.corpo.append((0, 0))
 
 
 class Frutinha:                                                     # Definindo a frutinha no jogo.
@@ -60,13 +84,36 @@ cobrinha = Snake()
 
 
 while True:
+    clock.tick(10)                                                  # Limitando a velocidade da cobrinha a 20 FPS
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:                               # Evento para sair do jogo ao clicar no X de fechar o programa.
             exit()
 
+        if event.type == pygame.KEYDOWN:                            # Verificando qual tecla foi precionada
+            if event.key == pygame.K_UP:                            # e mundado a direção de acordo com a tecla precionada.
+                cobrinha.cima()
+                break
+            elif event.key == pygame.K_DOWN:
+                cobrinha.baixo()
+                break
+            elif event.key == pygame.K_LEFT:
+                cobrinha.esquerda()
+                break
+            elif event.key == pygame.K_RIGHT:
+                cobrinha.direita()
+                break
+
+
+
+
+    if cobrinha.colisao_frutinha(frutinha):
+        cobrinha.comer()
+        frutinha = Frutinha()
+
     cobrinha.andar()
 
-    screen.fill(preto)  # Definindo a cor da tela como preta
+    screen.fill(preto)                                              # Definindo a cor da tela como preta
     frutinha.blit(screen)
     cobrinha.blit(screen)
 
