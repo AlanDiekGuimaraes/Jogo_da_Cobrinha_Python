@@ -21,6 +21,9 @@ class Snake:                                                        # Classe que
 
         self.corpo = [(100, 100),(90, 100), (80, 100) ]             # Lista que define a posição inicial da cobra.
 
+    def blit(self, screen):                                         # Método para desenhar a cobra na tela.
+        for posicao in self.corpo:                                  # Percorre cada posição do corpo da cobra.
+            screen.blit(self.textura, posicao)                      # Desenha o segmento da cobra na tela na posição especificada.
 
 class Frutinha:                                                     # Definindo a frutinha no jogo.
     cor = (255, 0, 0)                                               # Atribuindo a cor vermelha (em RGB) a a variavel cor.
@@ -33,6 +36,9 @@ class Frutinha:                                                     # Definindo 
         y = random.randint(0, 49) * 10
         self.posicao = (x, y)                                       # Definindo a posição da frutinha.
 
+    def blit(self, screen):
+        screen.blit(self.textura, self.posicao)                     # Desenhando a frutinha na tela na posição especificada.
+
 
 frutinha = Frutinha()
 cobrinha = Snake()
@@ -44,8 +50,7 @@ while True:
         if event.type == pygame.QUIT:                               # Evento para sair do jogo ao clicar no X de fechar o programa.
             exit()
 
-    screen.blit(frutinha.textura, frutinha.posicao)                 # Desenhando a frutinha na tela na posição especificada.
+    frutinha.blit(screen)
+    cobrinha.blit(screen)
 
-    for posicao in cobrinha.corpo:
-        screen.blit(cobrinha.textura, posicao)
     pygame.display.update()                                         # Atualizando a tela para exibir a frutinha.
