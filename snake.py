@@ -46,7 +46,7 @@ class Frutinha:                                                     # Definindo 
         self.textura = pygame.Surface(self.tamanho)                 # Criando um quandrado para a frutinha e atibuindo o tamanho da mesma.
         self.textura.fill(self.cor)                                 # Atribuindo a cor da variavel ao elemento.
 
-        x = random.randint(0, 49) * 10                        # Deixando a frutinha em uma posição randomica nos eixos x e y.
+        x = random.randint(0, 49) * 10                             # Deixando a frutinha em uma posição randomica nos eixos x e y.
         y = random.randint(0, 49) * 10
         self.posicao = (x, y)                                       # Definindo a posição da frutinha.
 
