@@ -62,6 +62,12 @@ class Snake:                                                        # Classe que
     def comer(self):
         self.corpo.append((0, 0))
 
+    def colisao_parede(self):
+        cabeca = self.corpo[0]
+        x = cabeca[0]
+        y = cabeca[1]
+
+        return x < 0 or y < 0 or x > 490 or y > 490                 # Identificando se a cobrinha está batendo com alguma parte das paredes.
 
 class Frutinha:                                                     # Definindo a frutinha no jogo.
     cor = (255, 0, 0)                                               # Atribuindo a cor vermelha (em RGB) a a variavel cor.
@@ -110,6 +116,9 @@ while True:
     if cobrinha.colisao_frutinha(frutinha):
         cobrinha.comer()
         frutinha = Frutinha()
+
+    if cobrinha.colisao_parede():
+        cobrinha = Snake()                                          # Se a cobrinha colidir com a parede, cria outra cobrinha.
 
     cobrinha.andar()
 
