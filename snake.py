@@ -5,6 +5,7 @@ import pygame
 pygame.init()
 resolucao = (500, 500)                                              # Criando a tela do Jogo em pixels
 screen = pygame.display.set_mode(resolucao)
+pygame.display.set_caption('Jogo da Cobrinha')
 preto = (0, 0, 0)                                                   # Cores em RGB para o fundo da tela.
 clock = pygame.time.Clock()                                         # Adicionando limitador de fps
 
@@ -12,6 +13,8 @@ class Snake:                                                        # Classe que
     cor = (255, 255, 255)                                           # Cor branca (em RGB) para a cobra.
     tamanho = (10, 10)                                              # Tamanho de cada segmento da cobra.
     velocidade = 10                                                 # Defiindo a velocidade da cobrinha.
+    tamanho_maximo = 49 * 49
+
     def __init__(self):                                             # Método inicializador da classe.
         self.textura = pygame.Surface(self.tamanho)                 # Criando uma superfície para cada pixel da cobra.
         self.textura.fill(self.cor)                                 # Preenchendo a superfície com a cor branca.
@@ -19,6 +22,8 @@ class Snake:                                                        # Classe que
         self.corpo = [ (100, 100),(90, 100), (80, 100)]             # Lista que define a posição inicial da cobra.
 
         self.direcao ='direita'
+
+        self.pontos = 0
 
     def blit(self, screen):                                         # Método para desenhar a cobra na tela.
         for posicao in self.corpo:                                  # Percorre cada posição do corpo da cobra.
@@ -61,32 +66,47 @@ class Snake:                                                        # Classe que
 
     def comer(self):
         self.corpo.append((0, 0))
+        self.pontos += 1
+        pygame.display.set_caption(f'Jogo da Cobrinha || Pontos: {self.pontos} ' )
 
-    def colisao_parede(self):
+
+    def colisao(self):
         cabeca = self.corpo[0]
         x = cabeca[0]
         y = cabeca[1]
 
-        return x < 0 or y < 0 or x > 490 or y > 490                 # Identificando se a cobrinha está batendo com alguma parte das paredes.
+        calda = self.corpo[1:]
+
+        return x < 0 or y < 0 or x > 490 or y > 490 or cabeca in calda or len(self.corpo) > self.tamanho_maximo  # Identificando se a cobrinha está batendo com alguma parte das paredes ou do seu corpo.
+
+    def auto_colisao(self):
+        return self.corpo[0] in self.corpo[1:]
 
 class Frutinha:                                                     # Definindo a frutinha no jogo.
     cor = (255, 0, 0)                                               # Atribuindo a cor vermelha (em RGB) a a variavel cor.
     tamanho = (10, 10)                                              # Definindo o tamanho para a frutinha.
-    def __init__(self):                                             # Método inicializador da classe.
+    def __init__(self, cobrinha):                                             # Método inicializador da classe.
         self.textura = pygame.Surface(self.tamanho)                 # Criando um quandrado para a frutinha e atibuindo o tamanho da mesma.
         self.textura.fill(self.cor)                                 # Atribuindo a cor da variavel ao elemento.
 
-        x = random.randint(0, 49) * 10                              # Deixando a frutinha em uma posição randomica nos eixos x e y.
-        y = random.randint(0, 49) * 10
-        self.posicao = (x, y)                                       # Definindo a posição da frutinha.
+        self.posicao = Frutinha.criar_posicao(cobrinha)                     # Definindo a posição da frutinha.
 
+    @staticmethod
+    def criar_posicao(cobrinha):
+        x = random.randint(0, 49) * 10                          # Deixando a frutinha em uma posição randomica nos eixos x e y.
+        y = random.randint(0, 49) * 10
+
+        if (x, y) in cobrinha.corpo:
+            frutinha.criar_posicao(cobrinha)
+        else:
+            return (x, y)
     def blit(self, screen):
         screen.blit(self.textura, self.posicao)                     # Desenhando a frutinha na tela na posição especificada.
 
-
-frutinha = Frutinha()
 cobrinha = Snake()
+frutinha = Frutinha(cobrinha)
 
+frutinha.blit(screen)
 
 
 while True:
@@ -115,9 +135,9 @@ while True:
 
     if cobrinha.colisao_frutinha(frutinha):
         cobrinha.comer()
-        frutinha = Frutinha()
+        frutinha = Frutinha(cobrinha)
 
-    if cobrinha.colisao_parede():
+    if cobrinha.colisao():
         cobrinha = Snake()                                          # Se a cobrinha colidir com a parede, cria outra cobrinha.
 
     cobrinha.andar()
