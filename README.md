@@ -2,6 +2,11 @@
  
 Este é um simples jogo da cobrinha desenvolvido em Python usando a biblioteca Pygame.
 
+## Descrição
+Este jogo foi desenvolvido enquanto assistia às vídeo aulas do curso SOLYD treinamentos. 
+- O objetivo é controlar a cobrinha para comer a maior quantidade possível de frutas, aumentando seu tamanho e pontuação.
+- O jogo termina se a cobrinha colidir com a parede ou com seu próprio corpo.
+
 ## Como jogar
 
 - Use as setas do teclado para mover a cobrinha:
@@ -9,9 +14,7 @@ Este é um simples jogo da cobrinha desenvolvido em Python usando a biblioteca P
   - ↓ para baixo
   - ← para esquerda
   - → para direita
-
-- O objetivo é comer a frutinha vermelha para ganhar pontos e fazer a cobrinha crescer. 
-- O jogo termina se a cobrinha colidir com a parede ou com seu próprio corpo.
+ 
 
 ## Requisitos
 
