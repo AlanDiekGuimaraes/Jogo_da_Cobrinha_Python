@@ -29,7 +29,7 @@ class Snake:                                                        # Classe que
         for posicao in self.corpo:                                  # Percorre cada posição do corpo da cobra.
             screen.blit(self.textura, posicao)                      # Desenha o segmento da cobra na tela na posição especificada.
 
-    def andar(self):                                                # Método para mover a cobra na direção atual.
+    def andar(self):                                               # Método para mover a cobra na direção atual.
         cabeca = self.corpo[0]                                      # A cabeça da cobra é o primeiro segmento na lista do corpo.
         x = cabeca[0]                                               # Cordenadas da cabeca
         y = cabeca[1]
